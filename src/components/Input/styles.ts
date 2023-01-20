@@ -9,5 +9,10 @@ export const styles = StyleSheet.create({
     padding: 16,
     marginRight: 8,
     fontFamily: "Inter_400Regular",
+    color: "#F2F2F2",
+  },
+  inputFocused: {
+    borderWidth: 1,
+    borderColor: "#5E60CE",
   },
 });

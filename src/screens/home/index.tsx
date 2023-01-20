@@ -13,6 +13,7 @@ import clipboardIcon from "../../assets/icons/clipboard/icon.png";
 import { styles } from "./styles";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
+import TaskCard from "../../components/Task";
 
 type Task = {
   id: string;
@@ -21,7 +22,26 @@ type Task = {
 };
 
 const Home: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([
+    {
+      id: "asas",
+      description:
+        "Integer urna interdum massa libero auctor neque turpis turpis semper.",
+      state: "pending",
+    },
+    {
+      id: "1212",
+      description:
+        "Integer urna interdum massa libero auctor neque turpis turpis semper.",
+      state: "pending",
+    },
+    {
+      id: "2324",
+      description:
+        "Integer urna interdum massa libero auctor neque turpis turpis semper.",
+      state: "concluded",
+    },
+  ]);
 
   const PENDING_TASK = (task: Task) => task.state === "pending";
   const COUNCLUDED_TASK = (task: Task) => task.state === "concluded";
@@ -87,11 +107,7 @@ const Home: React.FC = () => {
         data={tasks}
         ListHeaderComponent={headerListTask}
         ListEmptyComponent={emptyListTasks}
-        renderItem={({ item }) => (
-          <View>
-            <Text>{item.description}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => <TaskCard key={item.id} {...item} />}
       />
     </View>
   );
