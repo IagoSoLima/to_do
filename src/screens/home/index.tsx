@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from "react";
 import {
+  Alert,
   FlatList,
   Image,
+  Keyboard,
   Text,
   TextInput,
   TouchableOpacity,
@@ -11,9 +13,10 @@ import logoImg from "../../assets/logo.png";
 import clipboardIcon from "../../assets/icons/clipboard/icon.png";
 
 import { styles } from "./styles";
-import { Input } from "../../components/Input";
-import { Button } from "../../components/Button";
+import Input from "../../components/Input";
+import Button from "../../components/Button";
 import TaskCard from "../../components/Task";
+import { generateRandomNumbers } from "../../utils";
 
 type Task = {
   id: string;
@@ -42,6 +45,7 @@ const Home: React.FC = () => {
       state: "concluded",
     },
   ]);
+  const [input, setInput] = useState("");
 
   const PENDING_TASK = (task: Task) => task.state === "pending";
   const COUNCLUDED_TASK = (task: Task) => task.state === "concluded";
@@ -54,6 +58,46 @@ const Home: React.FC = () => {
     () => tasks.filter(COUNCLUDED_TASK).length,
     [tasks]
   );
+
+  function handleAddTask() {
+    let id = generateRandomNumbers().toString();
+    let idIsAlreadyregistred = false;
+    do {
+      const index = tasks.findIndex((task) => task.id === id);
+      idIsAlreadyregistred = index >= 0;
+    } while (idIsAlreadyregistred);
+
+    const task: Task = { id, description: input, state: "pending" };
+    setTasks((prevState) => [...prevState, { ...task }]);
+    setInput("");
+    Keyboard.dismiss();
+  }
+
+  function handleUpdateStateTask({ id, state }: Omit<Task, "description">) {
+    const index = tasks.findIndex((item) => item.id === id);
+
+    if (index < 0) return;
+
+    setTasks((prevState) => {
+      prevState[index].state = state;
+      return [...prevState];
+    });
+  }
+
+  function handleRemoveTask(id: string) {
+    Alert.alert("Remover", "Deseja remover a tarefa ?", [
+      {
+        text: "Não",
+        style: "cancel",
+      },
+      {
+        text: "Sim",
+        style: "default",
+        onPress: () =>
+          setTasks(tasks.filter(({ id: taskId }) => taskId !== id)),
+      },
+    ]);
+  }
 
   function headerListTask() {
     return (
@@ -98,8 +142,12 @@ const Home: React.FC = () => {
         <Image source={logoImg} />
       </View>
       <View style={styles.form}>
-        <Input />
-        <Button />
+        <Input
+          onChangeText={setInput}
+          value={input}
+          onSubmitEditing={handleAddTask}
+        />
+        <Button onPress={handleAddTask} />
       </View>
       <FlatList
         style={styles.list}
@@ -107,7 +155,14 @@ const Home: React.FC = () => {
         data={tasks}
         ListHeaderComponent={headerListTask}
         ListEmptyComponent={emptyListTasks}
-        renderItem={({ item }) => <TaskCard key={item.id} {...item} />}
+        renderItem={({ item }) => (
+          <TaskCard
+            key={item.id}
+            {...item}
+            onRemove={handleRemoveTask}
+            onUpdate={handleUpdateStateTask}
+          />
+        )}
       />
     </View>
   );

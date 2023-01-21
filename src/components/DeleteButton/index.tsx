@@ -1,11 +1,17 @@
 import React, { useRef, useState } from "react";
-import { Alert, Text, TouchableHighlight, View } from "react-native";
+import {
+  Alert,
+  Text,
+  TouchableHighlight,
+  TouchableHighlightProps,
+  View,
+} from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { styles } from "./styles";
 
 // import { Container } from './styles';
 
-const DeleteButton: React.FC = () => {
+const DeleteButton: React.FC<TouchableHighlightProps> = (props) => {
   const [isFocus, setIsFocus] = useState(false);
 
   return (
@@ -13,9 +19,9 @@ const DeleteButton: React.FC = () => {
       style={styles.button}
       activeOpacity={0.7}
       underlayColor="#333333"
-      onPress={() => {}}
       onPressIn={() => setIsFocus(true)}
       onPressOut={() => setIsFocus(false)}
+      {...props}
     >
       <Feather
         name="trash-2"

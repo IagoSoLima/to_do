@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { TextInput, View } from "react-native";
+import { TextInput, TextInputProps, View } from "react-native";
 
 import { styles } from "./styles";
 
-export function Input() {
+const Input: React.FC<TextInputProps> = (props) => {
   const [focus, setFocus] = useState(false);
   const styleInput = useMemo(
     () => (!focus ? styles.input : { ...styles.input, ...styles.inputFocused }),
@@ -17,6 +17,9 @@ export function Input() {
       placeholderTextColor={"#808080"}
       onFocus={() => setFocus(true)}
       onBlur={() => setFocus(false)}
+      {...props}
     />
   );
-}
+};
+
+export default Input;
